@@ -6,9 +6,9 @@ from thop import profile
 from module.PMDC import PMDC
 from module.attention import ChannelAttentionModule
 
-class Ghost(nn.Module):
+class GhostDV(nn.Module):
     def __init__(self, in_channels, out_channels,raw_planes,cheap_planes):
-        super(Ghost, self).__init__()
+        super(GhostDV, self).__init__()
         self.ch_avg = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=1, bias=False),
             nn.BatchNorm2d(out_channels))
@@ -122,9 +122,9 @@ class Upsample_block1(nn.Module):
         x = self.relu(x+res_x)
         return x
 
-class Ghost1(nn.Module):
+class GhostDV1(nn.Module):
     def __init__(self, in_channels, out_channels,raw_planes,cheap_planes):
-        super(Ghost1, self).__init__()
+        super(GhostDV1, self).__init__()
         self.ch_avg = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=1, bias=False),
             nn.BatchNorm2d(out_channels))
@@ -207,12 +207,12 @@ class MSP(nn.Module):
 class EA_UNet(nn.Module):
     def __init__(self,args):
         super(EA_UNet, self).__init__()
-        self.down_conv1 = Ghost(in_channels=4,out_channels=64,raw_planes=32,cheap_planes=32)
-        self.down_conv2 = Ghost(in_channels=64, out_channels=128, raw_planes=64, cheap_planes=64)
-        self.down_conv3 = Ghost(in_channels=128, out_channels=256, raw_planes=128, cheap_planes=128)
-        self.down_conv4 = Ghost(in_channels=256, out_channels=512, raw_planes=256, cheap_planes=256)
+        self.down_conv1 = GhostDV(in_channels=4,out_channels=64,raw_planes=32,cheap_planes=32)
+        self.down_conv2 = GhostDV(in_channels=64, out_channels=128, raw_planes=64, cheap_planes=64)
+        self.down_conv3 = GhostDV(in_channels=128, out_channels=256, raw_planes=128, cheap_planes=128)
+        self.down_conv4 = GhostDV(in_channels=256, out_channels=512, raw_planes=256, cheap_planes=256)
 
-        self.double_conv = Ghost1(in_channels=512, out_channels=1024, raw_planes=512, cheap_planes=512)
+        self.double_conv = GhostDV1(in_channels=512, out_channels=1024, raw_planes=512, cheap_planes=512)
 
         self.up_conv4 = Upsample_block(1024, 512)
         self.up_conv3 = Upsample_block(512, 256)
